@@ -1,6 +1,7 @@
 #import "TestAppDelegate.h"
 #import "TcpListenerSocket.h"
 #import "TcpStreamerSocket.h"
+#import "UdpStreamerSocket.h"
 
 @implementation TestAppDelegate
 
@@ -13,7 +14,8 @@
     // Override point for customization after application launch.
     
 	//TcpListenerSocketStart(50000);
-	TcpStreamerSocketStart("192.168.0.3", 50000);
+	//TcpStreamerSocketStart("10.0.1.22", 50000);
+	UdpStreamerSocketStart(50000);
 	
     return YES;
 }

@@ -13,8 +13,7 @@
 #include <string.h>
 
 typedef struct {
-	char remoteIp[128];
-	ushort remotePort;
+	ushort localPort;
 } STREAMER;
 
 static NSInputStream *stream = nil;
@@ -83,7 +82,7 @@ static NSString *getPrintableCFStreamEventType(CFStreamEventType eventType)
 
 static void setVoipTag(int fd)
 {
-	// TCPソケットの場合、CFReadStreamOpenまでやっておけば、バックグラウンドでも受信可能
+	// CFReadStreamOpenまでやっておけば、バックグラウンドでも受信可能
 	
 	CFReadStreamRef readStreamRef;
 	
@@ -113,12 +112,12 @@ static int makeSockaddr(struct sockaddr_in *sockaddr, const char *ipaddr, unsign
 	return 0;
 }
 
-static void *tcpStreamer(void *arg)
+static void *udpStreamer(void *arg)
 {
 	STREAMER *streamer = NULL;
-	int remoteSocket = -1;
+	int udpSocket = -1;
 	fd_set fds;
-	struct sockaddr_in remoteAddr;
+	struct sockaddr_in localAddr;
 	static char recvData[1024] = "";
 	ssize_t recvLen = 0;
 	int err = 0;
@@ -126,32 +125,40 @@ static void *tcpStreamer(void *arg)
 	streamer = (STREAMER *)arg;
 	
 	// リモートアドレス (このアドレス宛にTCP接続する)
-	if (makeSockaddr(&remoteAddr, streamer->remoteIp, streamer->remotePort) != 0) {
-		NSLog(@"remote address error");
+	if (makeSockaddr(&localAddr, "0.0.0.0", streamer->localPort) != 0) {
+		NSLog(@"local address error");
 		goto _clean_;
 	}
 	
 	// ソケットを作ってリモートアドレスにTCP接続する
-	remoteSocket = socket(AF_INET, SOCK_STREAM, 0);
-	if (remoteSocket < 0) {
+	udpSocket = socket(AF_INET, SOCK_DGRAM, 0);
+	if (udpSocket < 0) {
 		NSLog(@"socket error. errno=%#x",errno);
 		goto _clean_;
 	}
 	
+	err = bind(udpSocket, (struct sockaddr*)&localAddr, sizeof(localAddr));
+	if (err != 0) {
+		NSLog(@"bind error. errno=%#x",errno);
+		goto _clean_;
+	}
+	
+#if 0
 	err = connect(remoteSocket, (struct sockaddr *)&remoteAddr, sizeof(remoteAddr));
 	if (err != 0) {
 		NSLog(@"connect error. errno=%#x",errno);
 		goto _clean_;
 	}
+#endif
 	
-	setVoipTag(remoteSocket);
+	setVoipTag(udpSocket);
 	
 	do {
 		FD_ZERO(&fds);
-		FD_SET(remoteSocket, &fds);
+		FD_SET(udpSocket, &fds);
 		
 		NSLog(@"waiting...");
-		err = select(remoteSocket+1, &fds, NULL, NULL, NULL);
+		err = select(udpSocket+1, &fds, NULL, NULL, NULL);
 		if (err < 0) {
 			NSLog(@"select error: %s (errno=%#x)", strerror(errno), errno);
 			goto _clean_;
@@ -161,8 +168,8 @@ static void *tcpStreamer(void *arg)
 			continue;
 		}
 		
-		if (FD_ISSET(remoteSocket, &fds)) {
-			recvLen = recv(remoteSocket, recvData, sizeof(recvData), 0);
+		if (FD_ISSET(udpSocket, &fds)) {
+			recvLen = recv(udpSocket, recvData, sizeof(recvData), 0);
 			if (recvLen < 0) {
 				NSLog(@"recv error. %s errno=%#x", strerror(errno), errno);
 				break;
@@ -179,27 +186,30 @@ static void *tcpStreamer(void *arg)
 	} while (TRUE);
 	
 _clean_:
-	if (remoteSocket >= 0) {
-		close(remoteSocket);
-		remoteSocket = -1;
+	if (udpSocket >= 0) {
+		close(udpSocket);
+		udpSocket = -1;
+	}
+	if (streamer != NULL) {
+		free(streamer);
+		streamer = NULL;
 	}
 	
 	return NULL;
 }
 
-void TcpStreamerSocketStart(const char *remoteIp, ushort remotePort)
+void UdpStreamerSocketStart(ushort localPort)
 {
 	STREAMER *streamer;
 
-	NSLog(@"Connect to %s:%u(tcp)", remoteIp, remotePort);
+	NSLog(@"Moniter %u(udp) port", localPort);
 	
-	// TCPポートをリッスンするスレッドを起動
+	// UDPポートへのパケット到着を監視するスレッドを起動
 	
 	streamer = malloc(sizeof(STREAMER));
-	strcpy(streamer->remoteIp, remoteIp);
-	streamer->remotePort = remotePort;
+	streamer->localPort = localPort;
 
-	if (pthread_create(&thread, NULL, tcpStreamer, streamer) != 0) {
+	if (pthread_create(&thread, NULL, udpStreamer, streamer) != 0) {
 		perror("pthread_create error");
 	}
 }

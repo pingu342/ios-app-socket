@@ -29,6 +29,7 @@
 		A358EC05190A19F6005A7C09 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A358EC04190A19F6005A7C09 /* AVFoundation.framework */; };
 		A358EC08190A1FD8005A7C09 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A358EC07190A1FD8005A7C09 /* main.m */; };
 		A358EC0F190A46EF005A7C09 /* TcpListenerSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = A358EC0E190A46EF005A7C09 /* TcpListenerSocket.m */; };
+		D0ABFC6F1910856B00E5E8A6 /* UdpStreamerSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = D0ABFC6E1910856B00E5E8A6 /* UdpStreamerSocket.m */; };
 		D0CB9527190FDE02000EB143 /* TcpStreamerSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = D0CB9526190FDE02000EB143 /* TcpStreamerSocket.m */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +73,8 @@
 		A358EC07190A1FD8005A7C09 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A358EC0D190A46EF005A7C09 /* TcpListenerSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TcpListenerSocket.h; sourceTree = "<group>"; };
 		A358EC0E190A46EF005A7C09 /* TcpListenerSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TcpListenerSocket.m; sourceTree = "<group>"; };
+		D0ABFC6D1910856B00E5E8A6 /* UdpStreamerSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UdpStreamerSocket.h; sourceTree = "<group>"; };
+		D0ABFC6E1910856B00E5E8A6 /* UdpStreamerSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UdpStreamerSocket.m; sourceTree = "<group>"; };
 		D0CB9525190FDE02000EB143 /* TcpStreamerSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TcpStreamerSocket.h; sourceTree = "<group>"; };
 		D0CB9526190FDE02000EB143 /* TcpStreamerSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TcpStreamerSocket.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -145,6 +148,8 @@
 		A358EBBA1909E575005A7C09 /* Socket */ = {
 			isa = PBXGroup;
 			children = (
+				D0ABFC6D1910856B00E5E8A6 /* UdpStreamerSocket.h */,
+				D0ABFC6E1910856B00E5E8A6 /* UdpStreamerSocket.m */,
 				D0CB9525190FDE02000EB143 /* TcpStreamerSocket.h */,
 				D0CB9526190FDE02000EB143 /* TcpStreamerSocket.m */,
 				A358EC0D190A46EF005A7C09 /* TcpListenerSocket.h */,
@@ -302,6 +307,7 @@
 				D0CB9527190FDE02000EB143 /* TcpStreamerSocket.m in Sources */,
 				A358EBC51909E575005A7C09 /* TestAppDelegate.m in Sources */,
 				A358EC0F190A46EF005A7C09 /* TcpListenerSocket.m in Sources */,
+				D0ABFC6F1910856B00E5E8A6 /* UdpStreamerSocket.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,7 +397,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -424,7 +430,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

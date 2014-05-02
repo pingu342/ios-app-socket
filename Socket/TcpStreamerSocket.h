@@ -1,6 +1,6 @@
-#ifndef __SOCKET_STREAMER_H__
-#define __SOCKET_STREAMER_H__ (1)
+#ifndef __TCP_STREAMER_SOCKET_H__
+#define __TCP_STREAMER_SOCKET_H__ (1)
 
 extern void TcpStreamerSocketStart(const char *remoteIp, ushort remotePort);
 
-#endif /*__SOCKET_STREAMER_H__*/
+#endif /*__TCP_STREAMER_SOCKET_H__*/
